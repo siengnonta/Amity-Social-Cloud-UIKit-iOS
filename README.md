@@ -29,9 +29,9 @@ Once setup below has done, go to official [Amity](https://docs.amity.co/uikit/io
 
 ## Requirements
 
-| AmityUIKit Version | AmitySDK Version | Minimum iOS Target | Supported Language |
-| ------------------ | ---------------- | ------------------ | ------------------ |
-| 2.0.3              | 5.0.2            | iOS 12.0           |        Swift 5.3.1 |
+| Minimum iOS Target | Supported Language |
+| ------------------ | ------------------ |
+| iOS 12.0           |        Swift 5.3.1 |
 
 ## Dependencies
 
