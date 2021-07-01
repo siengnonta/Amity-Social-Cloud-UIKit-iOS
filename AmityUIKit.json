@@ -1,4 +1,4 @@
 {
-  "1.12.1" : "https://s3-ap-southeast-1.amazonaws.com/ekosdk-release/ios-uikit/1.12.1/uikit.zip",
-  "2.0.4" : "https://s3-ap-southeast-1.amazonaws.com/ekosdk-release/ios-uikit/2.0.4/uikit.zip"
+  "2.0.4" : "https://s3-ap-southeast-1.amazonaws.com/ekosdk-release/ios-uikit/2.0.4/uikit.zip",
+  "1.12.1" : "https://s3-ap-southeast-1.amazonaws.com/ekosdk-release/ios-uikit/1.12.1/uikit.zip"
 }
