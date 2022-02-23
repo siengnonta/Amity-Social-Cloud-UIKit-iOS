@@ -1,0 +1,1583 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.5.2 (swiftlang-1300.0.47.5 clang-1300.0.29.30)
+// swift-module-flags: -target arm64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name AmitySDK
+@_exported import AmitySDK
+import CommonCrypto
+import CoreFoundation
+import Dispatch
+import Foundation
+import MobileCoreServices
+import Realm
+import Security
+import Swift
+import UIKit.UIImage
+import UIKit
+import _Concurrency
+import zlib
+public protocol ASCHttpNetworkServiceProtocol {
+  func sendHttpRequest(_ networkRequest: AmitySDK.ASCNetworkRequest, completion: @escaping (Swift.Result<[Swift.String : Any]?, Swift.Error>) -> Swift.Void)
+}
+@objc @_inheritsConvenienceInitializers public class AmityMentioneesBuilder : ObjectiveC.NSObject {
+  @objc public func mentionChannel()
+  @objc public func mentionUsers(userIds: [Swift.String])
+  @objc public func build() -> [[Swift.String : Any]]
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @available(*, deprecated, message: "This class will be removed in future. Please use `AmityClient(apiKey:_, region:_)` method with `AmityRegion` instead.")
+public class AmityRegionalEndpoint : ObjectiveC.NSObject {
+  public static let GLOBAL: Swift.String
+  public static let EU: Swift.String
+  public static let SG: Swift.String
+  public static let US: Swift.String
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class AmityEndpoint : ObjectiveC.NSObject {
+  @objc final public let httpUrl: Swift.String?
+  @objc final public let rpcUrl: Swift.String?
+  @objc final public let mqttUrl: Swift.String?
+  @objc public init(httpUrl: Swift.String?, rpcUrl: Swift.String?, mqttHost: Swift.String?)
+  @objc deinit
+}
+@objc public enum AmityRegion : Swift.Int {
+  case global
+  case EU
+  case SG
+  case US
+  public var regionIdentifier: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum CocoaMQTTConnState : Swift.UInt8, Swift.CustomStringConvertible {
+  case disconnected = 0
+  case connecting
+  case connected
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.UInt8)
+  public typealias RawValue = Swift.UInt8
+  public var rawValue: Swift.UInt8 {
+    get
+  }
+}
+@objc public enum CocoaMQTTConnAck : Swift.UInt8, Swift.CustomStringConvertible {
+  case accept = 0
+  case unacceptableProtocolVersion
+  case identifierRejected
+  case serverUnavailable
+  case badUsernameOrPassword
+  case notAuthorized
+  case reserved
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.UInt8)
+  public typealias RawValue = Swift.UInt8
+  public var rawValue: Swift.UInt8 {
+    get
+  }
+}
+@objc public protocol CocoaMQTTDelegate {
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didConnectAck ack: AmitySDK.CocoaMQTTConnAck)
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didPublishMessage message: AmitySDK.CocoaMQTTMessage, id: Swift.UInt16)
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didPublishAck id: Swift.UInt16)
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didReceiveMessage message: AmitySDK.CocoaMQTTMessage, id: Swift.UInt16)
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didSubscribeTopics success: Foundation.NSDictionary, failed: [Swift.String])
+  @objc func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didUnsubscribeTopics topics: [Swift.String])
+  @objc func mqttDidPing(_ mqtt: AmitySDK.CocoaMQTT)
+  @objc func mqttDidReceivePong(_ mqtt: AmitySDK.CocoaMQTT)
+  @objc func mqttDidDisconnect(_ mqtt: AmitySDK.CocoaMQTT, withError err: Swift.Error?)
+  @objc optional func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  @objc optional func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didPublishComplete id: Swift.UInt16)
+  @objc optional func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didStateChangeTo state: AmitySDK.CocoaMQTTConnState)
+}
+@objc public class CocoaMQTT : ObjectiveC.NSObject {
+  weak public var delegate: AmitySDK.CocoaMQTTDelegate?
+  public var host: Swift.String
+  public var port: Swift.UInt16
+  public var clientID: Swift.String
+  public var username: Swift.String?
+  public var password: Swift.String?
+  public var cleanSession: Swift.Bool
+  public var willMessage: AmitySDK.CocoaMQTTMessage?
+  public var backgroundOnSocket: Swift.Bool {
+    get
+    set
+  }
+  public var delegateQueue: Dispatch.DispatchQueue
+  public var connState: AmitySDK.CocoaMQTTConnState {
+    get
+    set
+  }
+  public var deliverTimeout: Swift.Double {
+    get
+    set
+  }
+  public var messageQueueSize: Swift.UInt {
+    get
+    set
+  }
+  public var inflightWindowSize: Swift.UInt {
+    get
+    set
+  }
+  public var keepAlive: Swift.UInt16
+  public var autoReconnect: Swift.Bool
+  public var autoReconnectTimeInterval: Swift.UInt16
+  public var maxAutoReconnectTimeInterval: Swift.UInt16
+  public var logLevel: AmitySDK.CocoaMQTTLoggerLevel {
+    get
+    set
+  }
+  public var enableSSL: Swift.Bool {
+    get
+    set
+  }
+  public var sslSettings: [Swift.String : ObjectiveC.NSObject]? {
+    get
+    set
+  }
+  public var allowUntrustCACertificate: Swift.Bool {
+    get
+    set
+  }
+  public var subscriptions: [Swift.String : AmitySDK.CocoaMQTTQoS]
+  public var didConnectAck: (AmitySDK.CocoaMQTT, AmitySDK.CocoaMQTTConnAck) -> Swift.Void
+  public var didPublishMessage: (AmitySDK.CocoaMQTT, AmitySDK.CocoaMQTTMessage, Swift.UInt16) -> Swift.Void
+  public var didPublishAck: (AmitySDK.CocoaMQTT, Swift.UInt16) -> Swift.Void
+  public var didReceiveMessage: (AmitySDK.CocoaMQTT, AmitySDK.CocoaMQTTMessage, Swift.UInt16) -> Swift.Void
+  public var didSubscribeTopics: (AmitySDK.CocoaMQTT, Foundation.NSDictionary, [Swift.String]) -> Swift.Void
+  public var didUnsubscribeTopics: (AmitySDK.CocoaMQTT, [Swift.String]) -> Swift.Void
+  public var didPing: (AmitySDK.CocoaMQTT) -> Swift.Void
+  public var didReceivePong: (AmitySDK.CocoaMQTT) -> Swift.Void
+  public var didDisconnect: (AmitySDK.CocoaMQTT, Swift.Error?) -> Swift.Void
+  public var didReceiveTrust: (AmitySDK.CocoaMQTT, Security.SecTrust, @escaping (Swift.Bool) -> Swift.Void) -> Swift.Void
+  public var didCompletePublish: (AmitySDK.CocoaMQTT, Swift.UInt16) -> Swift.Void
+  public var didChangeState: (AmitySDK.CocoaMQTT, AmitySDK.CocoaMQTTConnState) -> Swift.Void
+  public init(clientID: Swift.String, host: Swift.String = "localhost", port: Swift.UInt16 = 1883, socket: AmitySDK.CocoaMQTTSocketProtocol = CocoaMQTTSocket())
+  @objc deinit
+  public func connect() -> Swift.Bool
+  public func connect(timeout: Foundation.TimeInterval) -> Swift.Bool
+  public func disconnect()
+  public func ping()
+  @discardableResult
+  public func publish(_ topic: Swift.String, withString string: Swift.String, qos: AmitySDK.CocoaMQTTQoS = .qos1, retained: Swift.Bool = false) -> Swift.Int
+  @discardableResult
+  public func publish(_ message: AmitySDK.CocoaMQTTMessage) -> Swift.Int
+  public func subscribe(_ topic: Swift.String, qos: AmitySDK.CocoaMQTTQoS = .qos1)
+  public func subscribe(_ topics: [(Swift.String, AmitySDK.CocoaMQTTQoS)])
+  public func unsubscribe(_ topic: Swift.String)
+  public func unsubscribe(_ topics: [Swift.String])
+}
+extension AmitySDK.CocoaMQTT : AmitySDK.CocoaMQTTSocketDelegate {
+  public func socketConnected(_ socket: AmitySDK.CocoaMQTTSocketProtocol)
+  public func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  public func socketDidSecure(_ sock: AmitySDK.GCDAsyncSocket)
+  public func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didWriteDataWithTag tag: Swift.Int)
+  public func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didRead data: Foundation.Data, withTag tag: Swift.Int)
+  public func socketDidDisconnect(_ socket: AmitySDK.CocoaMQTTSocketProtocol, withError err: Swift.Error?)
+}
+@objc public class AmityLiveStreamPostBuilder : ObjectiveC.NSObject, AmitySDK.AmityPostBuilder {
+  @objc public init(streamId: Swift.String, text: Swift.String?)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc public func buildForPostUpdate() -> [Swift.String : Any]!
+  @objc deinit
+}
+@objc public enum SocketIOStatus : Swift.Int, Swift.CustomStringConvertible {
+  case notConnected
+  case disconnected
+  case connecting
+  case connected
+  public var active: Swift.Bool {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public protocol ASCNetworkConfigurationProtocol {
+  @objc func getRequestURL(type: AmitySDK.ASCNetworkConfiguration.ASCNetworkType, path: Swift.String) -> Foundation.URL?
+  @objc func getBaseURL(networkType: AmitySDK.ASCNetworkConfiguration.ASCNetworkType) -> Swift.String
+}
+@objc final public class ASCNetworkConfiguration : ObjectiveC.NSObject, AmitySDK.ASCNetworkConfigurationProtocol {
+  @objc public init(region: AmitySDK.AmityRegion)
+  @objc public init(httpUrl: Swift.String?, socketUrl: Swift.String?, mqttUrl: Swift.String?)
+  @objc public enum ASCNetworkType : Swift.Int {
+    case rpc
+    case http
+    case mqtt
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc final public func getRequestURL(type: AmitySDK.ASCNetworkConfiguration.ASCNetworkType, path: Swift.String) -> Foundation.URL?
+  @objc final public func getBaseURL(networkType: AmitySDK.ASCNetworkConfiguration.ASCNetworkType) -> Swift.String
+  @objc deinit
+}
+public enum CocoaMQTTLoggerLevel : Swift.Int {
+  case debug, info, warning, error, off
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers open class CocoaMQTTLogger : ObjectiveC.NSObject {
+  public static var logger: AmitySDK.CocoaMQTTLogger
+  @objc override dynamic public init()
+  open func log(level: AmitySDK.CocoaMQTTLoggerLevel, message: Swift.String)
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers final public class SocketRawView : ObjectiveC.NSObject {
+  final public func emit(_ event: Swift.String, _ items: AmitySDK.SocketData...)
+  @objc final public func emit(_ event: Swift.String, with items: [Any])
+  final public func emitWithAck(_ event: Swift.String, _ items: AmitySDK.SocketData...) -> AmitySDK.OnAckCallback
+  @objc final public func emitWithAck(_ event: Swift.String, with items: [Any]) -> AmitySDK.OnAckCallback
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers final public class SocketRawAckView : ObjectiveC.NSObject {
+  final public func with(_ items: AmitySDK.SocketData...)
+  @objc final public func with(_ items: [Any])
+  @objc deinit
+}
+public protocol SocketEnginePollable : AmitySDK.SocketEngineSpec {
+  var invalidated: Swift.Bool { get }
+  var postWait: [AmitySDK.Post] { get set }
+  var session: Foundation.URLSession? { get }
+  var waitingForPoll: Swift.Bool { get set }
+  var waitingForPost: Swift.Bool { get set }
+  func doPoll()
+  func sendPollMessage(_ message: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData datas: [Foundation.Data], completion: (() -> ())?)
+  func stopPolling()
+}
+extension AmitySDK.SocketEnginePollable {
+  public func doPoll()
+  public func sendPollMessage(_ message: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData datas: [Foundation.Data], completion: (() -> ())? = nil)
+  public func stopPolling()
+}
+public enum CocoaMQTTError : Swift.Error {
+  @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+  public enum FoundationConnection : Swift.Error {
+    case closed(Foundation.URLSessionWebSocketTask.CloseCode)
+  }
+  case invalidURL
+  case readTimeout
+  case writeTimeout
+  public static func == (a: AmitySDK.CocoaMQTTError, b: AmitySDK.CocoaMQTTError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc final public class SocketAckEmitter : ObjectiveC.NSObject {
+  @objc final public var rawEmitView: AmitySDK.SocketRawAckView {
+    @objc get
+  }
+  final public var expected: Swift.Bool {
+    get
+  }
+  public init(socket: AmitySDK.SocketIOClient, ackNum: Swift.Int)
+  final public func with(_ items: AmitySDK.SocketData...)
+  @objc final public func with(_ items: [Any])
+  @objc deinit
+}
+@objc @_hasMissingDesignatedInitializers final public class OnAckCallback : ObjectiveC.NSObject {
+  @objc deinit
+  @objc final public func timingOut(after seconds: Swift.Double, callback: @escaping AmitySDK.AckCallback)
+}
+public protocol SSLTrustValidator {
+  func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+}
+open class SSLCert {
+  public init(data: Foundation.Data)
+  public init(key: Security.SecKey)
+  @objc deinit
+}
+open class ScreamSSLSecurity : AmitySDK.SSLTrustValidator {
+  public var validatedDN: Swift.Bool
+  public var validateEntireChain: Swift.Bool
+  convenience public init(usePublicKeys: Swift.Bool = false)
+  public init(certs: [AmitySDK.SSLCert], usePublicKeys: Swift.Bool)
+  open func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+  public func extractPublicKey(_ data: Foundation.Data) -> Security.SecKey?
+  public func extractPublicKey(_ cert: Security.SecCertificate, policy: Security.SecPolicy) -> Security.SecKey?
+  public func certificateChain(_ trust: Security.SecTrust) -> [Foundation.Data]
+  public func publicKeyChain(_ trust: Security.SecTrust) -> [Security.SecKey]
+  @objc deinit
+}
+@objc public class ASCAuthService : ObjectiveC.NSObject {
+  @objc public var apiKey: Swift.String
+  @objc public var userId: Swift.String? {
+    @objc get
+  }
+  @objc public var accessToken: Swift.String? {
+    @objc get
+  }
+  @objc public var userInternalId: Swift.String? {
+    @objc get
+  }
+  @objc public var clientId: Swift.String? {
+    @objc get
+  }
+  @objc public var isAuthenticating: Swift.Bool
+  @objc public var didUpdateAccessToken: ((Swift.String) -> Swift.Void)?
+  @objc public init(apiKey: Swift.String, sessionService: AmitySDK.ASCAuthSessionProtocol, networkService: AmitySDK.ASCNetworkService)
+  @objc public func registerDevice(userId: Swift.String, displayName: Swift.String?, authToken: Swift.String?, completion: @escaping (_ response: [Swift.String : Any]?, _ error: Swift.Error?) -> Swift.Void)
+  @objc public func createNewSession(userId: Swift.String)
+  @objc public func clearSession()
+  @objc deinit
+}
+@objc public protocol ASCConnectionStatusDelegate {
+  @objc func didChangeSocketConnectionStatus(status: AmitySDK.AmityConnectionStatus)
+  @objc func didChangeMqttConnectionStatus(status: AmitySDK.AmityConnectionStatus)
+}
+public protocol ASCSocketConnectionProtocol {
+  var delegate: AmitySDK.ASCSocketConnectionDelegate? { get set }
+  var connectionStatus: AmitySDK.AmityConnectionStatus { get }
+  func connect(accessToken: Swift.String)
+  func disconnect()
+  func isSocketManagerReady() -> Swift.Bool
+  func sendRPCRequest(endpoint: Swift.String, params: [Any], completion: (([Any]?, Swift.Error?) -> Swift.Void)?)
+}
+@objc public protocol ASCSocketConnectionDelegate : ObjectiveC.NSObjectProtocol {
+  @objc func didReceiveSocketError(error: Swift.Error)
+  @objc func didSetupSocketConnection()
+  @objc func didChangeSocketConnectionStatus(status: AmitySDK.AmityConnectionStatus)
+}
+@objc final public class ASCSocketConnectionService : ObjectiveC.NSObject, AmitySDK.ASCSocketConnectionProtocol {
+  @objc weak final public var delegate: AmitySDK.ASCSocketConnectionDelegate?
+  @objc final public var connectionStatus: AmitySDK.AmityConnectionStatus {
+    @objc get
+  }
+  @objc public init(config: AmitySDK.ASCNetworkConfigurationProtocol)
+  @objc final public func connect(accessToken: Swift.String)
+  @objc final public func disconnect()
+  @objc final public func sendRPCRequest(endpoint: Swift.String, params: [Any], completion: (([Any]?, Swift.Error?) -> Swift.Void)?)
+  final public func isSocketManagerReady() -> Swift.Bool
+  @objc deinit
+}
+@objc public protocol AmityClientDelegate {
+  @objc func didReceiveError(error: Swift.Error)
+  @objc func didChangeConnectionStatus(status: AmitySDK.AmityConnectionStatus)
+}
+@objc open class SocketManager : ObjectiveC.NSObject, AmitySDK.SocketManagerSpec, AmitySDK.SocketParsable, AmitySDK.SocketDataBufferable, AmitySDK.ConfigSettable {
+  @objc public var defaultSocket: AmitySDK.SocketIOClient {
+    @objc get
+  }
+  @objc final public let socketURL: Foundation.URL
+  public var config: AmitySDK.SocketIOClientConfiguration {
+    get
+    set
+  }
+  @objc public var engine: AmitySDK.SocketEngineSpec?
+  @objc public var forceNew: Swift.Bool
+  @objc public var handleQueue: Dispatch.DispatchQueue
+  @objc public var nsps: [Swift.String : AmitySDK.SocketIOClient]
+  @objc public var reconnects: Swift.Bool
+  @objc public var reconnectWait: Swift.Int
+  @objc public var reconnectWaitMax: Swift.Int
+  @objc public var randomizationFactor: Swift.Double
+  @objc public var status: AmitySDK.SocketIOStatus {
+    @objc get
+  }
+  public var waitingPackets: [AmitySDK.SocketPacket]
+  public init(socketURL: Foundation.URL, config: AmitySDK.SocketIOClientConfiguration = [])
+  @objc convenience public init(socketURL: Foundation.URL, config: [Swift.String : Any]?)
+  @objc deinit
+  @objc open func connect()
+  @objc open func connectSocket(_ socket: AmitySDK.SocketIOClient)
+  @objc open func didDisconnect(reason: Swift.String)
+  @objc open func disconnect()
+  @objc open func disconnectSocket(_ socket: AmitySDK.SocketIOClient)
+  @objc open func disconnectSocket(forNamespace nsp: Swift.String)
+  open func emitAll(clientEvent event: AmitySDK.SocketClientEvent, data: [Any])
+  open func emitAll(_ event: Swift.String, _ items: AmitySDK.SocketData...)
+  @objc open func emitAll(_ event: Swift.String, withItems items: [Any])
+  @objc open func engineDidClose(reason: Swift.String)
+  @objc open func engineDidError(reason: Swift.String)
+  @objc open func engineDidOpen(reason: Swift.String)
+  @objc open func engineDidReceivePong()
+  @objc open func engineDidSendPing()
+  @objc open func engineDidWebsocketUpgrade(headers: [Swift.String : Swift.String])
+  @objc open func parseEngineMessage(_ msg: Swift.String)
+  @objc open func parseEngineBinaryData(_ data: Foundation.Data)
+  @objc open func reconnect()
+  @discardableResult
+  @objc open func removeSocket(_ socket: AmitySDK.SocketIOClient) -> AmitySDK.SocketIOClient?
+  open func setConfigs(_ config: AmitySDK.SocketIOClientConfiguration)
+  @objc open func socket(forNamespace nsp: Swift.String) -> AmitySDK.SocketIOClient
+}
+@objc public protocol ASCMQTTConnectionDelegate : ObjectiveC.NSObjectProtocol {
+  @objc func didChangeMqttConnectionStatus(status: AmitySDK.AmityConnectionStatus)
+}
+@objc public class ASCMQTTConnectionService : ObjectiveC.NSObject {
+  @objc weak public var delegate: AmitySDK.ASCMQTTConnectionDelegate?
+  @objc public var connectionStatus: AmitySDK.AmityConnectionStatus {
+    @objc get
+  }
+  @objc public init(config: AmitySDK.ASCNetworkConfigurationProtocol)
+  @objc public func connect(clientId: Swift.String, userId: Swift.String, accessToken: Swift.String)
+  @objc public func disconnect()
+  @objc public func subscribe(topic: Swift.String)
+  @objc public func unsubscribe(topic: Swift.String)
+  @objc public func unsubscribe(topics: [Swift.String])
+  @objc public func publish(topic: Swift.String, message: Swift.String)
+  @objc deinit
+}
+extension AmitySDK.ASCMQTTConnectionService : AmitySDK.CocoaMQTTDelegate {
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didConnectAck ack: AmitySDK.CocoaMQTTConnAck)
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didReceiveMessage message: AmitySDK.CocoaMQTTMessage, id: Swift.UInt16)
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didSubscribeTopics success: Foundation.NSDictionary, failed: [Swift.String])
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didUnsubscribeTopics topics: [Swift.String])
+  @objc dynamic public func mqttDidDisconnect(_ mqtt: AmitySDK.CocoaMQTT, withError err: Swift.Error?)
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didStateChangeTo state: AmitySDK.CocoaMQTTConnState)
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didPublishMessage message: AmitySDK.CocoaMQTTMessage, id: Swift.UInt16)
+  @objc dynamic public func mqtt(_ mqtt: AmitySDK.CocoaMQTT, didPublishAck id: Swift.UInt16)
+  @objc dynamic public func mqttDidPing(_ mqtt: AmitySDK.CocoaMQTT)
+  @objc dynamic public func mqttDidReceivePong(_ mqtt: AmitySDK.CocoaMQTT)
+}
+@objc @_inheritsConvenienceInitializers public class ASCSessionModel : Realm.RLMObject {
+  @objc override dynamic public class func shouldIncludeInDefaultSchema() -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class AmityUserUpdateBuilder : ObjectiveC.NSObject {
+  @objc public func setDisplayName(_ name: Swift.String?)
+  @objc public func setUserDescription(_ description: Swift.String)
+  @objc public func setUserMetadata(_ metadata: [Swift.String : Any]?)
+  @objc public func setAvatarCustomUrl(_ customURL: Swift.String?)
+  @objc public func setAvatar(_ avatar: AmitySDK.AmityImageData?)
+  @objc public func build() -> [Swift.String : Any]
+  @objc override dynamic public init()
+  @objc deinit
+}
+public protocol CocoaMQTTWebSocketConnectionDelegate : AnyObject {
+  func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  func connectionOpened(_ conn: AmitySDK.CocoaMQTTWebSocketConnection)
+  func connectionClosed(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, withError error: Swift.Error?)
+  func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, receivedString string: Swift.String)
+  func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, receivedData data: Foundation.Data)
+}
+public protocol CocoaMQTTWebSocketConnection : ObjectiveC.NSObjectProtocol {
+  var delegate: AmitySDK.CocoaMQTTWebSocketConnectionDelegate? { get set }
+  var queue: Dispatch.DispatchQueue { get set }
+  func connect()
+  func disconnect()
+  func write(data: Foundation.Data, handler: @escaping (Swift.Error?) -> Swift.Void)
+}
+public protocol CocoaMQTTWebSocketConnectionBuilder {
+  func buildConnection(forURL url: Foundation.URL, withHeaders headers: [Swift.String : Swift.String]) throws -> AmitySDK.CocoaMQTTWebSocketConnection
+}
+public class CocoaMQTTWebSocket : AmitySDK.CocoaMQTTSocketProtocol {
+  public var enableSSL: Swift.Bool
+  public var headers: [Swift.String : Swift.String]
+  public typealias ConnectionBuilder = AmitySDK.CocoaMQTTWebSocketConnectionBuilder
+  public struct DefaultConnectionBuilder : AmitySDK.CocoaMQTTWebSocket.ConnectionBuilder {
+    public init()
+    public func buildConnection(forURL url: Foundation.URL, withHeaders headers: [Swift.String : Swift.String]) throws -> AmitySDK.CocoaMQTTWebSocketConnection
+  }
+  public func setDelegate(_ theDelegate: AmitySDK.CocoaMQTTSocketDelegate?, delegateQueue: Dispatch.DispatchQueue?)
+  public init(uri: Swift.String = "", builder: AmitySDK.CocoaMQTTWebSocket.ConnectionBuilder = CocoaMQTTWebSocket.DefaultConnectionBuilder())
+  public func connect(toHost host: Swift.String, onPort port: Swift.UInt16) throws
+  public func connect(toHost host: Swift.String, onPort port: Swift.UInt16, withTimeout timeout: Foundation.TimeInterval) throws
+  public func disconnect()
+  public func readData(toLength length: Swift.UInt, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+  public func write(_ data: Foundation.Data, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+  @objc deinit
+}
+extension AmitySDK.CocoaMQTTWebSocket : AmitySDK.CocoaMQTTWebSocketConnectionDelegate {
+  public func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  public func connectionOpened(_ conn: AmitySDK.CocoaMQTTWebSocketConnection)
+  public func connectionClosed(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, withError error: Swift.Error?)
+  public func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, receivedString string: Swift.String)
+  public func connection(_ conn: AmitySDK.CocoaMQTTWebSocketConnection, receivedData data: Foundation.Data)
+}
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+extension AmitySDK.CocoaMQTTWebSocket {
+  @objc public class FoundationConnection : ObjectiveC.NSObject, AmitySDK.CocoaMQTTWebSocketConnection {
+    weak public var delegate: AmitySDK.CocoaMQTTWebSocketConnectionDelegate?
+    public var queue: Dispatch.DispatchQueue {
+      get
+      set
+    }
+    public init(url: Foundation.URL, config: Foundation.URLSessionConfiguration)
+    public func connect()
+    public func disconnect()
+    public func write(data: Foundation.Data, handler: @escaping (Swift.Error?) -> Swift.Void)
+    @objc deinit
+  }
+}
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+extension AmitySDK.CocoaMQTTWebSocket.FoundationConnection : Foundation.URLSessionWebSocketDelegate {
+  @objc dynamic public func urlSession(_ session: Foundation.URLSession, task: Foundation.URLSessionTask, didReceive challenge: Foundation.URLAuthenticationChallenge, completionHandler: @escaping (Foundation.URLSession.AuthChallengeDisposition, Foundation.URLCredential?) -> Swift.Void)
+  @objc dynamic public func urlSession(_ session: Foundation.URLSession, webSocketTask: Foundation.URLSessionWebSocketTask, didOpenWithProtocol protocol: Swift.String?)
+  @objc dynamic public func urlSession(_ session: Foundation.URLSession, webSocketTask: Foundation.URLSessionWebSocketTask, didCloseWith closeCode: Foundation.URLSessionWebSocketTask.CloseCode, reason: Foundation.Data?)
+}
+extension AmitySDK.CocoaMQTTWebSocket {
+  @objc public class StarscreamConnection : ObjectiveC.NSObject, AmitySDK.CocoaMQTTWebSocketConnection {
+    public var reference: AmitySDK.WebSocket
+    weak public var delegate: AmitySDK.CocoaMQTTWebSocketConnectionDelegate?
+    public var queue: Dispatch.DispatchQueue {
+      get
+      set
+    }
+    public init(request: Foundation.URLRequest)
+    public func connect()
+    public func disconnect()
+    public func write(data: Foundation.Data, handler: @escaping (Swift.Error?) -> Swift.Void)
+    @objc deinit
+  }
+}
+extension AmitySDK.CocoaMQTTWebSocket.StarscreamConnection : AmitySDK.SSLTrustValidator {
+  public func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+}
+extension AmitySDK.CocoaMQTTWebSocket.StarscreamConnection : AmitySDK.WebSocketDelegate {
+  public func websocketDidConnect(socket: AmitySDK.WebSocketClient)
+  public func websocketDidDisconnect(socket: AmitySDK.WebSocketClient, error: Swift.Error?)
+  public func websocketDidReceiveMessage(socket: AmitySDK.WebSocketClient, text: Swift.String)
+  public func websocketDidReceiveData(socket: AmitySDK.WebSocketClient, data: Foundation.Data)
+}
+@objc @_inheritsConvenienceInitializers public class AmityVideoPostBuilder : ObjectiveC.NSObject, AmitySDK.AmityPostBuilder {
+  public func setVideos(_ videos: [AmitySDK.AmityVideoData])
+  public func setText(_ text: Swift.String)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc public func buildForPostUpdate() -> [Swift.String : Any]!
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc final public class AmityVideoData : ObjectiveC.NSObject {
+  @objc final public var fileId: Swift.String
+  @objc final public var fileURL: Swift.String
+  @objc final public var attributes: [Swift.String : Any]
+  @objc public init(response: [Swift.String : Any])
+  @objc override dynamic public init()
+  @objc public static func getStringValue(_ quality: AmitySDK.AmityVideoDataQuality) -> Swift.String
+  @objc deinit
+}
+@objc public enum AmityVideoDataQuality : Swift.Int, Swift.CaseIterable {
+  case original
+  case high
+  case medium
+  case low
+  public func stringValue() -> Swift.String
+  public init?(rawValue: Swift.Int)
+  public typealias AllCases = [AmitySDK.AmityVideoDataQuality]
+  public typealias RawValue = Swift.Int
+  public static var allCases: [AmitySDK.AmityVideoDataQuality] {
+    get
+  }
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum SocketEnginePacketType : Swift.Int {
+  case open
+  case close
+  case ping
+  case pong
+  case message
+  case upgrade
+  case noop
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc open class SocketIOClient : ObjectiveC.NSObject, AmitySDK.SocketIOClientSpec {
+  @objc final public let nsp: Swift.String
+  @objc public var sid: Swift.String {
+    @objc get
+  }
+  public var anyHandler: ((AmitySDK.SocketAnyEvent) -> ())? {
+    get
+  }
+  public var handlers: [AmitySDK.SocketEventHandler] {
+    get
+  }
+  @objc weak public var manager: AmitySDK.SocketManagerSpec? {
+    get
+  }
+  @objc public var rawEmitView: AmitySDK.SocketRawView {
+    @objc get
+  }
+  @objc public var status: AmitySDK.SocketIOStatus {
+    @objc get
+  }
+  @objc public init(manager: AmitySDK.SocketManagerSpec, nsp: Swift.String)
+  @objc deinit
+  @objc open func connect()
+  @objc open func connect(timeoutAfter: Swift.Double, withHandler handler: (() -> ())?)
+  open func didConnect(toNamespace namespace: Swift.String)
+  open func didDisconnect(reason: Swift.String)
+  @objc open func disconnect()
+  open func emit(_ event: Swift.String, _ items: AmitySDK.SocketData..., completion: (() -> ())? = nil)
+  @objc open func emit(_ event: Swift.String, with items: [Any])
+  @objc open func emit(_ event: Swift.String, with items: [Any], completion: (() -> ())? = nil)
+  open func emitWithAck(_ event: Swift.String, _ items: AmitySDK.SocketData...) -> AmitySDK.OnAckCallback
+  @objc open func emitWithAck(_ event: Swift.String, with items: [Any]) -> AmitySDK.OnAckCallback
+  open func emitAck(_ ack: Swift.Int, with items: [Any])
+  @objc open func handleAck(_ ack: Swift.Int, data: [Any])
+  open func handleClientEvent(_ event: AmitySDK.SocketClientEvent, data: [Any])
+  @objc open func handleEvent(_ event: Swift.String, data: [Any], isInternalMessage: Swift.Bool, withAck ack: Swift.Int = -1)
+  open func handlePacket(_ packet: AmitySDK.SocketPacket)
+  @objc open func leaveNamespace()
+  @objc open func joinNamespace()
+  open func off(clientEvent event: AmitySDK.SocketClientEvent)
+  @objc open func off(_ event: Swift.String)
+  @objc open func off(id: Foundation.UUID)
+  @discardableResult
+  @objc open func on(_ event: Swift.String, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  @discardableResult
+  open func on(clientEvent event: AmitySDK.SocketClientEvent, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  @discardableResult
+  open func once(clientEvent event: AmitySDK.SocketClientEvent, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  @discardableResult
+  @objc open func once(_ event: Swift.String, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  @objc open func onAny(_ handler: @escaping (AmitySDK.SocketAnyEvent) -> ())
+  @available(*, unavailable, message: "Call the manager's reconnect method")
+  @objc open func reconnect()
+  @objc open func removeAllHandlers()
+  @objc open func setReconnecting(reason: Swift.String)
+}
+@objc @_hasMissingDesignatedInitializers open class SSLSecurity : ObjectiveC.NSObject {
+  final public let security: AmitySDK.ScreamSSLSecurity
+  @objc convenience public init(usePublicKeys: Swift.Bool = true)
+  convenience public init(certs: [AmitySDK.SSLCert], usePublicKeys: Swift.Bool)
+  public func isValid(_ trust: Security.SecTrust, domain: Swift.String?) -> Swift.Bool
+  @objc deinit
+}
+public enum SocketAckStatus : Swift.String {
+  case noAck
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc public class AmityMultipartRequestBuilder : ObjectiveC.NSObject {
+  @objc public init(files: [AmitySDK.AmityUploadableFile], params: [Swift.String : Any]?, endpoint: Swift.String, accessToken: Swift.String)
+  @objc final public func build() -> Foundation.URLRequest?
+  @objc deinit
+}
+extension AmitySDK.AmityPost {
+  public func availableVideoQuality() -> [AmitySDK.AmityVideoDataQuality]
+}
+@objc public enum CocoaMQTTQoS : Swift.UInt8, Swift.CustomStringConvertible {
+  case qos0 = 0
+  case qos1
+  case qos2
+  case FAILTURE = 0x80
+  public var description: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.UInt8)
+  public typealias RawValue = Swift.UInt8
+  public var rawValue: Swift.UInt8 {
+    get
+  }
+}
+extension AmitySDK.CocoaMQTTQoS : Swift.Comparable {
+  public static func < (lhs: AmitySDK.CocoaMQTTQoS, rhs: AmitySDK.CocoaMQTTQoS) -> Swift.Bool
+  public static func <= (lhs: AmitySDK.CocoaMQTTQoS, rhs: AmitySDK.CocoaMQTTQoS) -> Swift.Bool
+  public static func > (lhs: AmitySDK.CocoaMQTTQoS, rhs: AmitySDK.CocoaMQTTQoS) -> Swift.Bool
+  public static func >= (lhs: AmitySDK.CocoaMQTTQoS, rhs: AmitySDK.CocoaMQTTQoS) -> Swift.Bool
+}
+public enum SocketIOClientOption {
+  case compress
+  case connectParams([Swift.String : Any])
+  case cookies([Foundation.HTTPCookie])
+  case extraHeaders([Swift.String : Swift.String])
+  case forceNew(Swift.Bool)
+  case forcePolling(Swift.Bool)
+  case forceWebsockets(Swift.Bool)
+  case enableSOCKSProxy(Swift.Bool)
+  case handleQueue(Dispatch.DispatchQueue)
+  case log(Swift.Bool)
+  case logger(AmitySDK.SocketLogger)
+  case path(Swift.String)
+  case reconnects(Swift.Bool)
+  case reconnectAttempts(Swift.Int)
+  case reconnectWait(Swift.Int)
+  case reconnectWaitMax(Swift.Int)
+  case randomizationFactor(Swift.Double)
+  case secure(Swift.Bool)
+  case security(AmitySDK.SSLSecurity)
+  case selfSigned(Swift.Bool)
+  case sessionDelegate(Foundation.URLSessionDelegate)
+  public var description: Swift.String {
+    get
+  }
+  public static func == (lhs: AmitySDK.SocketIOClientOption, rhs: AmitySDK.SocketIOClientOption) -> Swift.Bool
+}
+@objc public class PostQueryStreamMeta : ObjectiveC.NSObject {
+  @objc final public let targetId: Swift.String?
+  @objc final public let targetType: Swift.String?
+  @objc final public let isGlobal: Swift.Bool
+  @objc final public let matchingParentPostOnly: Swift.Bool
+  @objc final public let deletedType: AmitySDK.AmityQueryOption
+  @objc final public let dataTypes: Swift.Set<Swift.String>?
+  @objc final public let sortedBy: AmitySDK.AmityPostQuerySortOption
+  @objc final public let etc: [Swift.String]
+  @objc public init(targetId: Swift.String?, targetType: Swift.String?, isGlobal: Swift.Bool, matchingParentPostOnly: Swift.Bool, deletedType: AmitySDK.AmityQueryOption, dataTypes: Swift.Set<Swift.String>?, sortedBy: AmitySDK.AmityPostQuerySortOption, etc: [Swift.String])
+  @objc public func generateString() -> Swift.String
+  @objc deinit
+}
+@objc public class ASCDevicePushNotificationService : ObjectiveC.NSObject {
+  @objc public init(authService: AmitySDK.ASCAuthService, networkService: AmitySDK.ASCNetworkService)
+  @objc public func registerDeviceForPushNotification(deviceToken: Swift.String, completion: AmitySDK.AmityRequestCompletion?)
+  @objc public func unregisterDeviceForPushNotification(userId: Swift.String?, completion: AmitySDK.AmityRequestCompletion?)
+  @objc deinit
+}
+public struct SocketPacket : Swift.CustomStringConvertible {
+  public let nsp: Swift.String
+  public let id: Swift.Int
+  public let type: AmitySDK.SocketPacket.PacketType
+  public var binary: [Foundation.Data] {
+    get
+  }
+  public var data: [Any] {
+    get
+  }
+  public var args: [Any] {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+  public var event: Swift.String {
+    get
+  }
+  public var packetString: Swift.String {
+    get
+  }
+}
+extension AmitySDK.SocketPacket {
+  public enum PacketType : Swift.Int {
+    case connect
+    case disconnect
+    case event
+    case ack
+    case error
+    case binaryEvent
+    case binaryAck
+    public var isBinary: Swift.Bool {
+      get
+    }
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+}
+@objc @_inheritsConvenienceInitializers public class AmityPollPostBuilder : ObjectiveC.NSObject, AmitySDK.AmityPostBuilder {
+  public func setText(_ text: Swift.String)
+  public func setPollId(_ pollId: Swift.String)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc public func buildForPostUpdate() -> [Swift.String : Any]!
+  @objc override dynamic public init()
+  @objc deinit
+}
+public protocol SocketEngineWebsocket : AmitySDK.SocketEngineSpec {
+  func sendWebSocketMessage(_ str: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData datas: [Foundation.Data], completion: (() -> ())?)
+}
+extension AmitySDK.SocketEngineWebsocket {
+  public func sendWebSocketMessage(_ str: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData data: [Foundation.Data], completion: (() -> ())?)
+}
+public enum AmityPollAnswerType : Swift.String {
+  case single
+  case multiple
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers public class AmityPollCreationBuilder : ObjectiveC.NSObject, AmitySDK.AmityPollBuilder {
+  public func setQuestion(_ text: Swift.String)
+  public func setAnswerType(_ answerType: AmitySDK.AmityPollAnswerType)
+  public func setTimeToClosePoll(_ millisecond: Swift.Int)
+  public func setAnswer(_ text: Swift.String)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc override dynamic public init()
+  @objc deinit
+}
+public protocol CocoaMQTTSocketDelegate : AnyObject {
+  func socketConnected(_ socket: AmitySDK.CocoaMQTTSocketProtocol)
+  func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didWriteDataWithTag tag: Swift.Int)
+  func socket(_ socket: AmitySDK.CocoaMQTTSocketProtocol, didRead data: Foundation.Data, withTag tag: Swift.Int)
+  func socketDidDisconnect(_ socket: AmitySDK.CocoaMQTTSocketProtocol, withError err: Swift.Error?)
+}
+public protocol CocoaMQTTSocketProtocol {
+  var enableSSL: Swift.Bool { get set }
+  func setDelegate(_ theDelegate: AmitySDK.CocoaMQTTSocketDelegate?, delegateQueue: Dispatch.DispatchQueue?)
+  func connect(toHost host: Swift.String, onPort port: Swift.UInt16) throws
+  func connect(toHost host: Swift.String, onPort port: Swift.UInt16, withTimeout timeout: Foundation.TimeInterval) throws
+  func disconnect()
+  func readData(toLength length: Swift.UInt, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+  func write(_ data: Foundation.Data, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+}
+@objc @_inheritsConvenienceInitializers public class CocoaMQTTSocket : ObjectiveC.NSObject {
+  public var backgroundOnSocket: Swift.Bool
+  public var enableSSL: Swift.Bool
+  public var sslSettings: [Swift.String : ObjectiveC.NSObject]?
+  public var allowUntrustCACertificate: Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension AmitySDK.CocoaMQTTSocket : AmitySDK.CocoaMQTTSocketProtocol {
+  public func setDelegate(_ theDelegate: AmitySDK.CocoaMQTTSocketDelegate?, delegateQueue: Dispatch.DispatchQueue?)
+  public func connect(toHost host: Swift.String, onPort port: Swift.UInt16) throws
+  public func connect(toHost host: Swift.String, onPort port: Swift.UInt16, withTimeout timeout: Foundation.TimeInterval) throws
+  public func disconnect()
+  public func readData(toLength length: Swift.UInt, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+  public func write(_ data: Foundation.Data, withTimeout timeout: Foundation.TimeInterval, tag: Swift.Int)
+}
+extension AmitySDK.CocoaMQTTSocket : AmitySDK.GCDAsyncSocketDelegate {
+  @objc dynamic public func socket(_ sock: AmitySDK.GCDAsyncSocket, didConnectToHost host: Swift.String, port: Swift.UInt16)
+  @objc dynamic public func socket(_ sock: AmitySDK.GCDAsyncSocket, didReceive trust: Security.SecTrust, completionHandler: @escaping (Swift.Bool) -> Swift.Void)
+  @objc dynamic public func socketDidSecure(_ sock: AmitySDK.GCDAsyncSocket)
+  @objc dynamic public func socket(_ sock: AmitySDK.GCDAsyncSocket, didWriteDataWithTag tag: Swift.Int)
+  @objc dynamic public func socket(_ sock: AmitySDK.GCDAsyncSocket, didRead data: Foundation.Data, withTag tag: Swift.Int)
+  @objc dynamic public func socketDidDisconnect(_ sock: AmitySDK.GCDAsyncSocket, withError err: Swift.Error?)
+}
+@objc public protocol SocketEngineClient {
+  @objc func engineDidError(reason: Swift.String)
+  @objc func engineDidClose(reason: Swift.String)
+  @objc func engineDidOpen(reason: Swift.String)
+  @objc func engineDidReceivePong()
+  @objc func engineDidSendPing()
+  @objc func parseEngineMessage(_ msg: Swift.String)
+  @objc func parseEngineBinaryData(_ data: Foundation.Data)
+  @objc func engineDidWebsocketUpgrade(headers: [Swift.String : Swift.String])
+}
+public let WebsocketDidConnectNotification: Swift.String
+public let WebsocketDidDisconnectNotification: Swift.String
+public let WebsocketDisconnectionErrorKeyName: Swift.String
+public enum CloseCode : Swift.UInt16 {
+  case normal
+  case goingAway
+  case protocolError
+  case protocolUnhandledType
+  case noStatusReceived
+  case encoding
+  case policyViolated
+  case messageTooBig
+  public init?(rawValue: Swift.UInt16)
+  public typealias RawValue = Swift.UInt16
+  public var rawValue: Swift.UInt16 {
+    get
+  }
+}
+public enum ErrorType : Swift.Error {
+  case outputStreamWriteError
+  case compressionError
+  case invalidSSLError
+  case writeTimeoutError
+  case protocolError
+  case upgradeError
+  case closeError
+  public static func == (a: AmitySDK.ErrorType, b: AmitySDK.ErrorType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct WSError : Swift.Error {
+  public let type: AmitySDK.ErrorType
+  public let message: Swift.String
+  public let code: Swift.Int
+}
+public protocol WebSocketClient : AnyObject {
+  var delegate: AmitySDK.WebSocketDelegate? { get set }
+  var pongDelegate: AmitySDK.WebSocketPongDelegate? { get set }
+  var disableSSLCertValidation: Swift.Bool { get set }
+  var overrideTrustHostname: Swift.Bool { get set }
+  var desiredTrustHostname: Swift.String? { get set }
+  var sslClientCertificate: AmitySDK.ScreamSSLClientCertificate? { get set }
+  var security: AmitySDK.SSLTrustValidator? { get set }
+  var enabledSSLCipherSuites: [Security.SSLCipherSuite]? { get set }
+  var isConnected: Swift.Bool { get }
+  func connect()
+  func disconnect(forceTimeout: Foundation.TimeInterval?, closeCode: Swift.UInt16)
+  func write(string: Swift.String, completion: (() -> ())?)
+  func write(data: Foundation.Data, completion: (() -> ())?)
+  func write(ping: Foundation.Data, completion: (() -> ())?)
+  func write(pong: Foundation.Data, completion: (() -> ())?)
+}
+extension AmitySDK.WebSocketClient {
+  public func write(string: Swift.String)
+  public func write(data: Foundation.Data)
+  public func write(ping: Foundation.Data)
+  public func write(pong: Foundation.Data)
+  public func disconnect()
+}
+public struct SSLSettings {
+  public let useSSL: Swift.Bool
+  public let disableCertValidation: Swift.Bool
+  public var overrideTrustHostname: Swift.Bool
+  public var desiredTrustHostname: Swift.String?
+  public let sslClientCertificate: AmitySDK.ScreamSSLClientCertificate?
+  public let cipherSuites: [Security.SSLCipherSuite]?
+}
+public protocol WSStreamDelegate : AnyObject {
+  func newBytesInStream()
+  func streamDidError(error: Swift.Error?)
+}
+public protocol WSStream {
+  var delegate: AmitySDK.WSStreamDelegate? { get set }
+  func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: AmitySDK.SSLSettings, completion: @escaping ((Swift.Error?) -> Swift.Void))
+  func write(data: Foundation.Data) -> Swift.Int
+  func read() -> Foundation.Data?
+  func cleanup()
+  func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
+}
+@objc @_inheritsConvenienceInitializers open class FoundationStream : ObjectiveC.NSObject, AmitySDK.WSStream, Foundation.StreamDelegate {
+  weak public var delegate: AmitySDK.WSStreamDelegate?
+  public var enableSOCKSProxy: Swift.Bool
+  public func connect(url: Foundation.URL, port: Swift.Int, timeout: Foundation.TimeInterval, ssl: AmitySDK.SSLSettings, completion: @escaping ((Swift.Error?) -> Swift.Void))
+  public func write(data: Foundation.Data) -> Swift.Int
+  public func read() -> Foundation.Data?
+  public func cleanup()
+  public func sslTrust() -> (trust: Security.SecTrust?, domain: Swift.String?)
+  @objc open func stream(_ aStream: Foundation.Stream, handle eventCode: Foundation.Stream.Event)
+  @objc override dynamic public init()
+  @objc deinit
+}
+public protocol WebSocketDelegate : AnyObject {
+  func websocketDidConnect(socket: AmitySDK.WebSocketClient)
+  func websocketDidDisconnect(socket: AmitySDK.WebSocketClient, error: Swift.Error?)
+  func websocketDidReceiveMessage(socket: AmitySDK.WebSocketClient, text: Swift.String)
+  func websocketDidReceiveData(socket: AmitySDK.WebSocketClient, data: Foundation.Data)
+}
+public protocol WebSocketPongDelegate : AnyObject {
+  func websocketDidReceivePong(socket: AmitySDK.WebSocketClient, data: Foundation.Data?)
+}
+public protocol WebSocketAdvancedDelegate : AnyObject {
+  func websocketDidConnect(socket: AmitySDK.WebSocket)
+  func websocketDidDisconnect(socket: AmitySDK.WebSocket, error: Swift.Error?)
+  func websocketDidReceiveMessage(socket: AmitySDK.WebSocket, text: Swift.String, response: AmitySDK.WebSocket.WSResponse)
+  func websocketDidReceiveData(socket: AmitySDK.WebSocket, data: Foundation.Data, response: AmitySDK.WebSocket.WSResponse)
+  func websocketHttpUpgrade(socket: AmitySDK.WebSocket, request: Swift.String)
+  func websocketHttpUpgrade(socket: AmitySDK.WebSocket, response: Swift.String)
+}
+@objc open class WebSocket : ObjectiveC.NSObject, Foundation.StreamDelegate, AmitySDK.WebSocketClient, AmitySDK.WSStreamDelegate {
+  public enum OpCode : Swift.UInt8 {
+    case continueFrame
+    case textFrame
+    case binaryFrame
+    case connectionClose
+    case ping
+    case pong
+    public init?(rawValue: Swift.UInt8)
+    public typealias RawValue = Swift.UInt8
+    public var rawValue: Swift.UInt8 {
+      get
+    }
+  }
+  public static let ErrorDomain: Swift.String
+  public var callbackQueue: Dispatch.DispatchQueue
+  @_hasMissingDesignatedInitializers public class WSResponse {
+    public var code: AmitySDK.WebSocket.OpCode
+    public var frameCount: Swift.Int
+    public var buffer: Foundation.NSMutableData?
+    final public let firstFrame: Foundation.Date
+    @objc deinit
+  }
+  weak public var delegate: AmitySDK.WebSocketDelegate?
+  weak public var advancedDelegate: AmitySDK.WebSocketAdvancedDelegate?
+  weak public var pongDelegate: AmitySDK.WebSocketPongDelegate?
+  public var onConnect: (() -> Swift.Void)?
+  public var onDisconnect: ((Swift.Error?) -> Swift.Void)?
+  public var onText: ((Swift.String) -> Swift.Void)?
+  public var onData: ((Foundation.Data) -> Swift.Void)?
+  public var onPong: ((Foundation.Data?) -> Swift.Void)?
+  public var onHttpResponseHeaders: (([Swift.String : Swift.String]) -> Swift.Void)?
+  public var disableSSLCertValidation: Swift.Bool
+  public var overrideTrustHostname: Swift.Bool
+  public var desiredTrustHostname: Swift.String?
+  public var sslClientCertificate: AmitySDK.ScreamSSLClientCertificate?
+  public var enableCompression: Swift.Bool
+  public var security: AmitySDK.SSLTrustValidator?
+  public var enabledSSLCipherSuites: [Security.SSLCipherSuite]?
+  public var isConnected: Swift.Bool {
+    get
+  }
+  public var request: Foundation.URLRequest
+  public var currentURL: Foundation.URL {
+    get
+  }
+  public var respondToPingWithPong: Swift.Bool
+  public init(request: Foundation.URLRequest, protocols: [Swift.String]? = nil, stream: AmitySDK.WSStream = FoundationStream())
+  convenience public init(url: Foundation.URL, protocols: [Swift.String]? = nil)
+  convenience public init(url: Foundation.URL, writeQueueQOS: Foundation.QualityOfService, protocols: [Swift.String]? = nil)
+  open func connect()
+  open func disconnect(forceTimeout: Foundation.TimeInterval? = nil, closeCode: Swift.UInt16 = CloseCode.normal.rawValue)
+  open func write(string: Swift.String, completion: (() -> ())? = nil)
+  open func write(data: Foundation.Data, completion: (() -> ())? = nil)
+  open func write(ping: Foundation.Data, completion: (() -> ())? = nil)
+  open func write(pong: Foundation.Data, completion: (() -> ())? = nil)
+  public func newBytesInStream()
+  public func streamDidError(error: Swift.Error?)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ASCDeviceService {
+  public static let shared: AmitySDK.ASCDeviceService
+  public func getDeviceId() -> Swift.String
+  @objc deinit
+}
+@objc public protocol SocketEngineSpec {
+  @objc var client: AmitySDK.SocketEngineClient? { get set }
+  @objc var closed: Swift.Bool { get }
+  @objc var compress: Swift.Bool { get }
+  @objc var connected: Swift.Bool { get }
+  @objc var connectParams: [Swift.String : Any]? { get set }
+  @objc var cookies: [Foundation.HTTPCookie]? { get }
+  @objc var engineQueue: Dispatch.DispatchQueue { get }
+  @objc var extraHeaders: [Swift.String : Swift.String]? { get set }
+  @objc var fastUpgrade: Swift.Bool { get }
+  @objc var forcePolling: Swift.Bool { get }
+  @objc var forceWebsockets: Swift.Bool { get }
+  @objc var polling: Swift.Bool { get }
+  @objc var probing: Swift.Bool { get }
+  @objc var sid: Swift.String { get }
+  @objc var socketPath: Swift.String { get }
+  @objc var urlPolling: Foundation.URL { get }
+  @objc var urlWebSocket: Foundation.URL { get }
+  @objc @available(*, deprecated, message: "No longer needed, if we're not polling, then we must be doing websockets")
+  var websocket: Swift.Bool { get }
+  @objc var ws: AmitySDK.WebSocket? { get }
+  @objc init(client: AmitySDK.SocketEngineClient, url: Foundation.URL, options: [Swift.String : Any]?)
+  @objc func connect()
+  @objc func didError(reason: Swift.String)
+  @objc func disconnect(reason: Swift.String)
+  @objc func doFastUpgrade()
+  @objc func flushWaitingForPostToWebSocket()
+  @objc func parseEngineData(_ data: Foundation.Data)
+  @objc func parseEngineMessage(_ message: Swift.String)
+  @objc func write(_ msg: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData data: [Foundation.Data], completion: (() -> ())?)
+}
+public protocol SocketData {
+  func socketRepresentation() throws -> AmitySDK.SocketData
+}
+extension AmitySDK.SocketData {
+  public func socketRepresentation() -> AmitySDK.SocketData
+}
+extension Swift.Array : AmitySDK.SocketData {
+}
+extension Swift.Bool : AmitySDK.SocketData {
+}
+extension Swift.Dictionary : AmitySDK.SocketData {
+}
+extension Swift.Double : AmitySDK.SocketData {
+}
+extension Swift.Int : AmitySDK.SocketData {
+}
+extension Foundation.NSArray : AmitySDK.SocketData {
+}
+extension Foundation.Data : AmitySDK.SocketData {
+}
+extension Foundation.NSData : AmitySDK.SocketData {
+}
+extension Foundation.NSDictionary : AmitySDK.SocketData {
+}
+extension Foundation.NSString : AmitySDK.SocketData {
+}
+extension Foundation.NSNull : AmitySDK.SocketData {
+}
+extension Swift.String : AmitySDK.SocketData {
+}
+public typealias AckCallback = ([Any]) -> ()
+public typealias NormalCallback = ([Any], AmitySDK.SocketAckEmitter) -> ()
+public typealias Post = (msg: Swift.String, completion: (() -> ())?)
+@objc public class CocoaMQTTMessage : ObjectiveC.NSObject {
+  public var qos: AmitySDK.CocoaMQTTQoS
+  public var topic: Swift.String
+  public var payload: [Swift.UInt8]
+  public var retained: Swift.Bool
+  public var duplicated: Swift.Bool
+  public var string: Swift.String? {
+    get
+  }
+  public init(topic: Swift.String, string: Swift.String, qos: AmitySDK.CocoaMQTTQoS = .qos1, retained: Swift.Bool = false)
+  public init(topic: Swift.String, payload: [Swift.UInt8], qos: AmitySDK.CocoaMQTTQoS = .qos1, retained: Swift.Bool = false)
+  @objc deinit
+}
+extension AmitySDK.CocoaMQTTMessage {
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class AmityChannelQueryType : ObjectiveC.NSObject {
+  @objc public static let standard: Swift.String
+  @objc public static let `private`: Swift.String
+  @objc public static let broadcast: Swift.String
+  @objc public static let conversation: Swift.String
+  @objc public static let live: Swift.String
+  @objc public static let community: Swift.String
+  @objc deinit
+}
+public protocol SocketIOClientSpec : AnyObject {
+  var anyHandler: ((AmitySDK.SocketAnyEvent) -> ())? { get }
+  var handlers: [AmitySDK.SocketEventHandler] { get }
+  var manager: AmitySDK.SocketManagerSpec? { get }
+  var nsp: Swift.String { get }
+  var rawEmitView: AmitySDK.SocketRawView { get }
+  var status: AmitySDK.SocketIOStatus { get }
+  func connect()
+  func connect(timeoutAfter: Swift.Double, withHandler handler: (() -> ())?)
+  func didConnect(toNamespace namespace: Swift.String)
+  func didDisconnect(reason: Swift.String)
+  func didError(reason: Swift.String)
+  func disconnect()
+  func emit(_ event: Swift.String, _ items: AmitySDK.SocketData..., completion: (() -> ())?)
+  func emitAck(_ ack: Swift.Int, with items: [Any])
+  func emitWithAck(_ event: Swift.String, _ items: AmitySDK.SocketData...) -> AmitySDK.OnAckCallback
+  func handleAck(_ ack: Swift.Int, data: [Any])
+  func handleClientEvent(_ event: AmitySDK.SocketClientEvent, data: [Any])
+  func handleEvent(_ event: Swift.String, data: [Any], isInternalMessage: Swift.Bool, withAck ack: Swift.Int)
+  func handlePacket(_ packet: AmitySDK.SocketPacket)
+  func leaveNamespace()
+  func joinNamespace()
+  func off(clientEvent event: AmitySDK.SocketClientEvent)
+  func off(_ event: Swift.String)
+  func off(id: Foundation.UUID)
+  func on(_ event: Swift.String, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  func on(clientEvent event: AmitySDK.SocketClientEvent, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  func once(clientEvent event: AmitySDK.SocketClientEvent, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  func once(_ event: Swift.String, callback: @escaping AmitySDK.NormalCallback) -> Foundation.UUID
+  func onAny(_ handler: @escaping (AmitySDK.SocketAnyEvent) -> ())
+  func removeAllHandlers()
+  func setReconnecting(reason: Swift.String)
+}
+extension AmitySDK.SocketIOClientSpec {
+  public func didError(reason: Swift.String)
+}
+public enum SocketClientEvent : Swift.String {
+  case connect
+  case disconnect
+  case error
+  case ping
+  case pong
+  case reconnect
+  case reconnectAttempt
+  case statusChange
+  case websocketUpgrade
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc public protocol ASCMQTTMessageHandler : ObjectiveC.NSObjectProtocol {
+  @objc func handleResponse(response: [Swift.String : Any], eventType: Swift.String)
+}
+@objc public class ASCMQTTSubscriptionService : ObjectiveC.NSObject {
+  @objc public init(mqttService: AmitySDK.ASCMQTTConnectionService, messageHandler: AmitySDK.ASCMQTTMessageHandler)
+  @objc public func configure(userId: Swift.String)
+  @objc public func subscribe(topic: Swift.String, completion: @escaping AmitySDK.AmityRequestCompletion)
+  @objc public func unsubscribe(topic: Swift.String, completion: @escaping AmitySDK.AmityRequestCompletion)
+  @objc deinit
+}
+@objc public protocol SocketManagerSpec : AmitySDK.SocketEngineClient {
+  @objc var defaultSocket: AmitySDK.SocketIOClient { get }
+  @objc var engine: AmitySDK.SocketEngineSpec? { get set }
+  @objc var forceNew: Swift.Bool { get set }
+  @objc var handleQueue: Dispatch.DispatchQueue { get set }
+  @objc var nsps: [Swift.String : AmitySDK.SocketIOClient] { get set }
+  @objc var reconnects: Swift.Bool { get set }
+  @objc var reconnectWait: Swift.Int { get set }
+  @objc var reconnectWaitMax: Swift.Int { get set }
+  @objc var randomizationFactor: Swift.Double { get set }
+  @objc var socketURL: Foundation.URL { get }
+  @objc var status: AmitySDK.SocketIOStatus { get }
+  @objc func connect()
+  @objc func connectSocket(_ socket: AmitySDK.SocketIOClient)
+  @objc func didDisconnect(reason: Swift.String)
+  @objc func disconnect()
+  @objc func disconnectSocket(_ socket: AmitySDK.SocketIOClient)
+  @objc func disconnectSocket(forNamespace nsp: Swift.String)
+  @objc func emitAll(_ event: Swift.String, withItems items: [Any])
+  @objc func reconnect()
+  @objc @discardableResult
+  func removeSocket(_ socket: AmitySDK.SocketIOClient) -> AmitySDK.SocketIOClient?
+  @objc func socket(forNamespace nsp: Swift.String) -> AmitySDK.SocketIOClient
+}
+@objc @_hasMissingDesignatedInitializers final public class SocketAnyEvent : ObjectiveC.NSObject {
+  @objc final public let event: Swift.String
+  @objc final public let items: [Any]?
+  @objc override final public var description: Swift.String {
+    @objc get
+  }
+  @objc deinit
+}
+@objc public class ASCNetworkService : ObjectiveC.NSObject {
+  public var httpNetwork: AmitySDK.ASCHttpNetworkServiceProtocol
+  @objc public init(config: AmitySDK.ASCNetworkConfigurationProtocol)
+  @objc deinit
+}
+@objc public class AmityPostQueryOptions : ObjectiveC.NSObject {
+  @objc final public let targetType: AmitySDK.AmityPostTargetType
+  @objc final public let targetId: Swift.String
+  @objc final public let sortBy: AmitySDK.AmityPostQuerySortOption
+  @objc final public let deletedOption: AmitySDK.AmityQueryOption
+  @objc final public let filterPostTypes: Swift.Set<Swift.String>?
+  @objc public init(targetType: AmitySDK.AmityPostTargetType, targetId: Swift.String, sortBy: AmitySDK.AmityPostQuerySortOption, deletedOption: AmitySDK.AmityQueryOption, filterPostTypes: Swift.Set<Swift.String>?)
+  @objc deinit
+}
+public protocol SocketLogger : AnyObject {
+  var log: Swift.Bool { get set }
+  func log(_ message: @autoclosure () -> Swift.String, type: Swift.String)
+  func error(_ message: @autoclosure () -> Swift.String, type: Swift.String)
+}
+extension AmitySDK.SocketLogger {
+  public func log(_ message: @autoclosure () -> Swift.String, type: Swift.String)
+  public func error(_ message: @autoclosure () -> Swift.String, type: Swift.String)
+}
+@objc public protocol ASCAuthSessionProtocol {
+  @objc var userId: Swift.String? { get }
+  @objc var internalUserId: Swift.String? { get }
+  @objc var accessToken: Swift.String? { get }
+  @objc var apiKey: Swift.String { get }
+  @objc var sessionId: Swift.String? { get }
+  @objc func setupSession(apiKey: Swift.String)
+  @objc func createNewSession(apiKey: Swift.String)
+  @objc func clearSession()
+  @objc func saveToken(accessToken: Swift.String, refreshToken: Swift.String)
+  @objc func saveUserId(id: Swift.String)
+  @objc func saveInternalUserId(_ id: Swift.String?)
+  @objc func isAccessTokenValid() -> Swift.Bool
+}
+@objc public class ASCSessionService : ObjectiveC.NSObject, AmitySDK.ASCAuthSessionProtocol {
+  @objc public var userId: Swift.String? {
+    @objc get
+  }
+  @objc public var internalUserId: Swift.String? {
+    @objc get
+  }
+  @objc public var accessToken: Swift.String? {
+    @objc get
+  }
+  @objc public var apiKey: Swift.String {
+    @objc get
+  }
+  @objc public var sessionId: Swift.String? {
+    @objc get
+  }
+  @objc public init(realm: Realm.RLMRealm)
+  @objc public func createNewSession(apiKey: Swift.String)
+  @objc public func saveToken(accessToken: Swift.String, refreshToken: Swift.String)
+  @objc public func saveUserId(id: Swift.String)
+  @objc public func saveInternalUserId(_ id: Swift.String?)
+  @objc public func setupSession(apiKey: Swift.String)
+  @objc public func clearSession()
+  @objc public func isAccessTokenValid() -> Swift.Bool
+  @objc deinit
+}
+public struct SSLClientCertificateError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String?
+}
+public class ScreamSSLClientCertificate {
+  convenience public init(pkcs12Path: Swift.String, password: Swift.String) throws
+  public init(identity: Security.SecIdentity, identityCertificate: Security.SecCertificate)
+  convenience public init(pkcs12Url: Foundation.URL, password: Swift.String) throws
+  public init(pkcs12Url: Foundation.URL, importOptions: CoreFoundation.CFDictionary) throws
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class AmityFilePostBuilder : ObjectiveC.NSObject, AmitySDK.AmityPostBuilder {
+  public func setFiles(_ files: [AmitySDK.AmityFileData])
+  public func setText(_ text: Swift.String)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc public func buildForPostUpdate() -> [Swift.String : Any]!
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class AmityUploadableFile : ObjectiveC.NSObject {
+  @objc public var identifier: Swift.String
+  @objc public var fileData: Foundation.Data
+  @objc public var fileName: Swift.String?
+  @objc public var mimeType: Swift.String
+  @objc public var metaData: [Swift.String : Any]
+  @objc public init(fileData: Foundation.Data, fileName: Swift.String?)
+  @objc deinit
+}
+@objc public enum AmityLogLevel : Swift.Int {
+  case debug
+  case warn
+  case error
+  case all
+  case none
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objc public class AmityLog : ObjectiveC.NSObject {
+  @objc public static var logLevel: AmitySDK.AmityLogLevel
+  @objc public static func debug(_ info: Any)
+  @objc public static func warn(_ info: Any)
+  @objc public static func error(_ info: Any)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class AmityChannelNotificationSettings : ObjectiveC.NSObject {
+  @objc public var isEnabled: Swift.Bool
+  @objc public init(isEnabled: Swift.Bool)
+  @objc deinit
+}
+public struct SocketIOClientConfiguration : Swift.ExpressibleByArrayLiteral, Swift.Collection, Swift.MutableCollection {
+  public typealias Element = AmitySDK.SocketIOClientOption
+  public typealias Index = Swift.Array<AmitySDK.SocketIOClientOption>.Index
+  public typealias Iterator = Swift.Array<AmitySDK.SocketIOClientOption>.Iterator
+  public typealias SubSequence = Swift.Array<AmitySDK.SocketIOClientOption>.SubSequence
+  public var startIndex: AmitySDK.SocketIOClientConfiguration.Index {
+    get
+  }
+  public var endIndex: AmitySDK.SocketIOClientConfiguration.Index {
+    get
+  }
+  public var isEmpty: Swift.Bool {
+    get
+  }
+  public var count: AmitySDK.SocketIOClientConfiguration.Index.Stride {
+    get
+  }
+  public var first: AmitySDK.SocketIOClientConfiguration.Element? {
+    get
+  }
+  public subscript(position: AmitySDK.SocketIOClientConfiguration.Index) -> AmitySDK.SocketIOClientConfiguration.Element {
+    get
+    set
+  }
+  public subscript(bounds: Swift.Range<AmitySDK.SocketIOClientConfiguration.Index>) -> AmitySDK.SocketIOClientConfiguration.SubSequence {
+    get
+    set
+  }
+  public init(arrayLiteral elements: AmitySDK.SocketIOClientConfiguration.Element...)
+  public func makeIterator() -> AmitySDK.SocketIOClientConfiguration.Iterator
+  public func index(after i: AmitySDK.SocketIOClientConfiguration.Index) -> AmitySDK.SocketIOClientConfiguration.Index
+  public mutating func insert(_ element: AmitySDK.SocketIOClientConfiguration.Element, replacing replace: Swift.Bool = true)
+  public typealias ArrayLiteralElement = AmitySDK.SocketIOClientConfiguration.Element
+  public typealias Indices = Swift.DefaultIndices<AmitySDK.SocketIOClientConfiguration>
+}
+public protocol ConfigSettable {
+  mutating func setConfigs(_ config: AmitySDK.SocketIOClientConfiguration)
+}
+@objc @_inheritsConvenienceInitializers public class AmityImagePostBuilder : ObjectiveC.NSObject, AmitySDK.AmityPostBuilder {
+  public func setImages(_ images: [AmitySDK.AmityImageData])
+  public func setText(_ text: Swift.String)
+  @objc public func build() -> [Swift.String : Any]!
+  @objc public func buildForPostUpdate() -> [Swift.String : Any]!
+  @objc override dynamic public init()
+  @objc deinit
+}
+public struct SocketEventHandler {
+  public let event: Swift.String
+  public let id: Foundation.UUID
+  public let callback: AmitySDK.NormalCallback
+  public func executeCallback(with items: [Any], withAck ack: Swift.Int, withSocket socket: AmitySDK.SocketIOClient)
+}
+@objc open class SocketEngine : ObjectiveC.NSObject, Foundation.URLSessionDelegate, AmitySDK.SocketEnginePollable, AmitySDK.SocketEngineWebsocket, AmitySDK.ConfigSettable {
+  @objc final public let engineQueue: Dispatch.DispatchQueue
+  @objc public var connectParams: [Swift.String : Any]? {
+    @objc get
+    @objc set
+  }
+  @objc public var extraHeaders: [Swift.String : Swift.String]?
+  public var postWait: [AmitySDK.Post]
+  public var waitingForPoll: Swift.Bool
+  public var waitingForPost: Swift.Bool
+  @objc public var closed: Swift.Bool {
+    get
+  }
+  @objc public var compress: Swift.Bool {
+    get
+  }
+  @objc public var connected: Swift.Bool {
+    get
+  }
+  @objc public var cookies: [Foundation.HTTPCookie]? {
+    get
+  }
+  @objc public var fastUpgrade: Swift.Bool {
+    get
+  }
+  @objc public var forcePolling: Swift.Bool {
+    get
+  }
+  @objc public var forceWebsockets: Swift.Bool {
+    get
+  }
+  public var invalidated: Swift.Bool {
+    get
+  }
+  @objc public var polling: Swift.Bool {
+    get
+  }
+  @objc public var probing: Swift.Bool {
+    get
+  }
+  public var session: Foundation.URLSession? {
+    get
+  }
+  @objc public var sid: Swift.String {
+    get
+  }
+  @objc public var socketPath: Swift.String {
+    get
+  }
+  @objc public var urlPolling: Foundation.URL {
+    get
+  }
+  @objc public var urlWebSocket: Foundation.URL {
+    get
+  }
+  @available(*, deprecated, message: "No longer needed, if we're not polling, then we must be doing websockets")
+  @objc public var websocket: Swift.Bool {
+    get
+  }
+  public var enableSOCKSProxy: Swift.Bool {
+    get
+  }
+  @objc public var ws: AmitySDK.WebSocket? {
+    get
+  }
+  @objc weak public var client: AmitySDK.SocketEngineClient?
+  public init(client: AmitySDK.SocketEngineClient, url: Foundation.URL, config: AmitySDK.SocketIOClientConfiguration)
+  @objc required convenience public init(client: AmitySDK.SocketEngineClient, url: Foundation.URL, options: [Swift.String : Any]?)
+  @objc deinit
+  @objc open func connect()
+  @objc open func didError(reason: Swift.String)
+  @objc open func disconnect(reason: Swift.String)
+  @objc open func doFastUpgrade()
+  @objc open func flushWaitingForPostToWebSocket()
+  @objc open func parseEngineData(_ data: Foundation.Data)
+  @objc open func parseEngineMessage(_ message: Swift.String)
+  open func setConfigs(_ config: AmitySDK.SocketIOClientConfiguration)
+  @objc open func write(_ msg: Swift.String, withType type: AmitySDK.SocketEnginePacketType, withData data: [Foundation.Data], completion: (() -> ())? = nil)
+}
+extension AmitySDK.SocketEngine {
+  public func URLSession(session: Foundation.URLSession, didBecomeInvalidWithError error: Foundation.NSError?)
+}
+public protocol ASCSocketEventManagerProtocol {
+  func bind(event: Swift.String, completion: (([Any]) -> Swift.Void)?)
+  func unbind(event: Swift.String)
+  func bindEventsInQueue()
+}
+@objc public class ASCSocketEventManager : ObjectiveC.NSObject, AmitySDK.ASCSocketEventManagerProtocol {
+  @objc public init(connection: AmitySDK.ASCSocketConnectionService)
+  @objc public func bind(event: Swift.String, completion: (([Any]) -> Swift.Void)?)
+  @objc public func unbind(event: Swift.String)
+  @objc public func bindEventsInQueue()
+  @objc deinit
+}
+public protocol SocketParsable : AnyObject {
+  func parseBinaryData(_ data: Foundation.Data) -> AmitySDK.SocketPacket?
+  func parseSocketMessage(_ message: Swift.String) -> AmitySDK.SocketPacket?
+}
+public enum SocketParsableError : Swift.Error {
+  case invalidDataArray
+  case invalidPacket
+  case invalidPacketType
+  public static func == (a: AmitySDK.SocketParsableError, b: AmitySDK.SocketParsableError) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol SocketDataBufferable : AnyObject {
+  var waitingPackets: [AmitySDK.SocketPacket] { get set }
+}
+extension AmitySDK.SocketParsable where Self : AmitySDK.SocketDataBufferable, Self : AmitySDK.SocketManagerSpec {
+  public func parseSocketMessage(_ message: Swift.String) -> AmitySDK.SocketPacket?
+  public func parseBinaryData(_ data: Foundation.Data) -> AmitySDK.SocketPacket?
+}
+@objc public class ASCDatabaseService : ObjectiveC.NSObject {
+  @objc public var authRealm: Realm.RLMRealm?
+  @objc public var dataRealm: Realm.RLMRealm?
+  @objc public init(apiKey: Swift.String)
+  @objc public func setupAuthRealm(objectClasses: [Swift.AnyClass])
+  @objc public func setupDataRealm(objectClasses: [Swift.AnyClass])
+  @objc public func deleteAuthRealmData()
+  @objc public func deleteDataRealmData()
+  @objc public func deleteLocalData()
+  @objc public func isDatabaseReady() -> Swift.Bool
+  @objc deinit
+}
+public struct ASCNetworkRequest : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+extension AmitySDK.AmityRegion : Swift.Equatable {}
+extension AmitySDK.AmityRegion : Swift.Hashable {}
+extension AmitySDK.AmityRegion : Swift.RawRepresentable {}
+extension AmitySDK.CocoaMQTTConnState : Swift.Equatable {}
+extension AmitySDK.CocoaMQTTConnState : Swift.Hashable {}
+extension AmitySDK.CocoaMQTTConnState : Swift.RawRepresentable {}
+extension AmitySDK.CocoaMQTTConnAck : Swift.Equatable {}
+extension AmitySDK.CocoaMQTTConnAck : Swift.Hashable {}
+extension AmitySDK.CocoaMQTTConnAck : Swift.RawRepresentable {}
+extension AmitySDK.SocketIOStatus : Swift.Equatable {}
+extension AmitySDK.SocketIOStatus : Swift.Hashable {}
+extension AmitySDK.SocketIOStatus : Swift.RawRepresentable {}
+extension AmitySDK.ASCNetworkConfiguration.ASCNetworkType : Swift.Equatable {}
+extension AmitySDK.ASCNetworkConfiguration.ASCNetworkType : Swift.Hashable {}
+extension AmitySDK.ASCNetworkConfiguration.ASCNetworkType : Swift.RawRepresentable {}
+extension AmitySDK.CocoaMQTTLoggerLevel : Swift.Equatable {}
+extension AmitySDK.CocoaMQTTLoggerLevel : Swift.Hashable {}
+extension AmitySDK.CocoaMQTTLoggerLevel : Swift.RawRepresentable {}
+extension AmitySDK.CocoaMQTTError : Swift.Equatable {}
+extension AmitySDK.CocoaMQTTError : Swift.Hashable {}
+extension AmitySDK.AmityVideoDataQuality : Swift.Equatable {}
+extension AmitySDK.AmityVideoDataQuality : Swift.Hashable {}
+extension AmitySDK.AmityVideoDataQuality : Swift.RawRepresentable {}
+extension AmitySDK.SocketEnginePacketType : Swift.Equatable {}
+extension AmitySDK.SocketEnginePacketType : Swift.Hashable {}
+extension AmitySDK.SocketEnginePacketType : Swift.RawRepresentable {}
+extension AmitySDK.SocketAckStatus : Swift.Equatable {}
+extension AmitySDK.SocketAckStatus : Swift.Hashable {}
+extension AmitySDK.SocketAckStatus : Swift.RawRepresentable {}
+extension AmitySDK.CocoaMQTTQoS : Swift.Hashable {}
+extension AmitySDK.CocoaMQTTQoS : Swift.RawRepresentable {}
+extension AmitySDK.SocketIOClientOption : Swift.Equatable {}
+extension AmitySDK.SocketIOClientOption : Swift.CustomStringConvertible {}
+extension AmitySDK.SocketPacket.PacketType : Swift.Equatable {}
+extension AmitySDK.SocketPacket.PacketType : Swift.Hashable {}
+extension AmitySDK.SocketPacket.PacketType : Swift.RawRepresentable {}
+extension AmitySDK.AmityPollAnswerType : Swift.Equatable {}
+extension AmitySDK.AmityPollAnswerType : Swift.Hashable {}
+extension AmitySDK.AmityPollAnswerType : Swift.RawRepresentable {}
+extension AmitySDK.CloseCode : Swift.Equatable {}
+extension AmitySDK.CloseCode : Swift.Hashable {}
+extension AmitySDK.CloseCode : Swift.RawRepresentable {}
+extension AmitySDK.ErrorType : Swift.Equatable {}
+extension AmitySDK.ErrorType : Swift.Hashable {}
+extension AmitySDK.WebSocket.OpCode : Swift.Equatable {}
+extension AmitySDK.WebSocket.OpCode : Swift.Hashable {}
+extension AmitySDK.WebSocket.OpCode : Swift.RawRepresentable {}
+extension AmitySDK.SocketClientEvent : Swift.Equatable {}
+extension AmitySDK.SocketClientEvent : Swift.Hashable {}
+extension AmitySDK.SocketClientEvent : Swift.RawRepresentable {}
+extension AmitySDK.AmityLogLevel : Swift.Equatable {}
+extension AmitySDK.AmityLogLevel : Swift.Hashable {}
+extension AmitySDK.AmityLogLevel : Swift.RawRepresentable {}
+extension AmitySDK.SocketParsableError : Swift.Equatable {}
+extension AmitySDK.SocketParsableError : Swift.Hashable {}

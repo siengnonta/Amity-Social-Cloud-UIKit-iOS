@@ -1,0 +1,8 @@
+Versions of External Library that we use in our sdk.
+
+PinCache: 3.0.3
+SocketIO: 15.2.0
+Starscream: 3.1.1
+Alamofire: 5.4.1
+CocoaAsyncSocket: 7.6.5 - Hash: 5ddba5e
+CocoaMQTT: 3.1.1 - Hash: 2731e27
